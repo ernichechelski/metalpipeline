@@ -1,66 +1,56 @@
-/**
- * Copyright (c) 2018 Razeware LLC
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * Notwithstanding the foregoing, you may not use, copy, modify, merge, publish,
- * distribute, sublicense, create a derivative work, and/or sell copies of the
- * Software in any work that is designed, intended, or marketed for pedagogical or
- * instructional purposes related to programming, coding, application development,
- * or information technology.  Permission for such use, copying, modification,
- * merger, publication, distribution, sublicensing, creation of derivative works,
- * or sale is expressly withheld.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-
 import MetalKit
 
-//class Primitive {
-//
-//
-//
-//
-//  class func cube(device: MTLDevice, size: Float) -> MDLMesh {
-//    let allocator = MTKMeshBufferAllocator(device: device)
-//    let mesh = MDLMesh(boxWithExtent: [size, size, size],
-//                       segments: [1, 1, 1],
-//                       inwardNormals: false, geometryType: .triangles,
-//                       allocator: allocator)
-//
-//    return MDLMesh(capsuleWithExtent: [size,size,size], cylinderSegments: [1,1], hemisphereSegments: Int32(size), inwardNormals: false, geometryType: .triangles, allocator: allocator)
-//  }
-//}
 
-class BoxPrimitive: MDLMesh {
-    init?(device: MTLDevice, size: Float) {
-        let allocator = MTKMeshBufferAllocator(device: device)
-        super.init(boxWithExtent: [size, size, size],
+class BoxPrimitive: Primitive {
+    override func create(allocator: MTKMeshBufferAllocator) {
+        mesh = MDLMesh(boxWithExtent: [size, size, size],
                            segments: [1, 1, 1],
                            inwardNormals: false, geometryType: .triangles,
                            allocator: allocator)
     }
+}
 
 
-
-    override init(bufferAllocator: MDLMeshBufferAllocator?) {
-        super.init(bufferAllocator: bufferAllocator)
+class SpherePrimitive: Primitive {
+    override func create(allocator: MTKMeshBufferAllocator) {
+        mesh = MDLMesh(sphereWithExtent: [size/2,size/2,size/2], segments: [20,20], inwardNormals: false, geometryType: .triangles, allocator: allocator)
     }
 
+    override func calculateParam(time: Float) -> Float {
+        tan(time)
+    }
+}
+
+class ConePrimitive: Primitive {
+    override func create(allocator: MTKMeshBufferAllocator) {
+        mesh = MDLMesh(coneWithExtent: [size,size,size], segments: [2,20], inwardNormals: false, cap: true, geometryType: .triangles, allocator: allocator)
+    }
+}
+
+class Primitive {
+
+    let color: NSColor
+
+    let size: Float
+
+    var mesh: MDLMesh!
+
+    init?(size: Float, color: NSColor) {
+        self.color = color
+        self.size = size
+    }
+
+    /// Override this method to create mesh with provided allocator
+    func create(allocator: MTKMeshBufferAllocator) {}
+
+    ///
+    func calculateParam(time: Float) -> Float {
+        sin(time)
+    }
+}
+
+extension MDLMesh {
+    
     func asMTKMesh(device: MTLDevice) -> MTKMesh {
         try! MTKMesh(mesh: self, device: device)
     }
