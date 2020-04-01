@@ -10,38 +10,48 @@ import Metal
 import MetalKit
 import MetalPerformanceShaders
 
-final class FilterProcessor: NSObject, MTKViewDelegate {
+final class FilterProcessor: NSObject, MTKViewDelegate, ImageProcessor {
 
-    private var context: GraphicContext
+    enum ProcessingError: Error {
+        case noCGImage
+        case emptyRenderedDrawable
+        case emptyRenderedTexture
+    }
+
     private var pipelineState: MTLComputePipelineState?
     private var texture: MTLTexture?
-    private var filter: MediaFilter
     private var renderTimesCount: Int = 0
     private var processFinished: Bool = false
     private var completionClosure: ((_ success: Bool, _ finished: Bool, _ image: UIImage?, _ error: Error?) -> ())?
 
-    init?(mediaFilter: MediaFilter) {
-        filter = mediaFilter
-        guard let context = GraphicContext(mediaFilter: filter) else { return nil }
-        self.context = context
+    private let device: MetalDeviceWrapper
+
+    init?(mediaFilter: Filter) {
+        guard let context = MetalDeviceWrapper(mediaFilter: mediaFilter) else { return nil }
+        self.device = context
         super.init()
     }
 
     func processImage(image: UIImage, completion: @escaping ((_ success: Bool, _ finished: Bool, _ image: UIImage?, _ error: Error?) -> ())) {
 
         let mtkView = with(MTKView(frame: CGRect.zero)) {
-            $0.device = context.device
+            $0.device = device.device
             $0.delegate = self
             $0.framebufferOnly = false
             $0.autoResizeDrawable = false
             $0.drawableSize = image.size
         }
 
+        guard let cgImage = image.cgImage else {
+            completionClosure!(false, false, nil, ProcessingError.noCGImage)
+            return
+        }
+
         completionClosure = completion
 
         do {
-            pipelineState = try context.makePipelineState()
-            texture = try context.makeTexture(for: image.cgImage!)
+            pipelineState = try device.makePipelineState()
+            texture = try device.makeTexture(for: cgImage)
 
             mtkView.draw()
 
@@ -56,7 +66,7 @@ final class FilterProcessor: NSObject, MTKViewDelegate {
     }
 
     func draw(in view: MTKView) {
-        context.process { commandBuffer in
+        device.process { commandBuffer in
 
             let drawingTexture = view.currentDrawable!.texture
 
@@ -66,7 +76,7 @@ final class FilterProcessor: NSObject, MTKViewDelegate {
                 $0.setTexture(drawingTexture, index: 1)
             }
 
-            let configuration = FilterConfiguration(
+            let configuration = FilteringComponents(
                                     encoder: encoder,
                                     view: view,
                                     sourceTexture: drawingTexture,
@@ -77,20 +87,30 @@ final class FilterProcessor: NSObject, MTKViewDelegate {
             let threadGroupCount = drawingTexture.recommendedThreadGroupCount
             let threadGroups = drawingTexture.recommendedThreads
 
-            if filter.hasCustomShader {
-                filter.manageParameters(configuration: configuration)
+            if device.hasCustomShader {
+                device.manageParameters(configuration)
                 encoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadGroupCount)
                 encoder.endEncoding()
             } else {
                 encoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadGroupCount)
                 encoder.endEncoding()
-                filter.manageParameters(configuration: configuration)
+                device.manageParameters(configuration)
             }
 
-            commandBuffer.present(view.currentDrawable!)
+            guard let result = view.currentDrawable else {
+                completionClosure!(false, false, nil, ProcessingError.emptyRenderedDrawable)
+                return
+            }
+
+            commandBuffer.present(result)
         }
 
-        completionClosure!(true, processFinished, UIImage.image(fromTexture: view.currentDrawable!.texture), nil)
+        guard let resultTexture = view.currentDrawable?.texture else {
+            completionClosure!(false, false, nil, ProcessingError.emptyRenderedTexture)
+            return
+        }
+
+        completionClosure!(true, processFinished, UIImage(fromTexture: resultTexture), nil)
     }
 
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -105,6 +125,8 @@ fileprivate extension MTLTexture {
     }
 
     var recommendedThreads: MTLSize {
-        MTLSizeMake(width / recommendedThreadGroupCount.width, height / recommendedThreadGroupCount.height, 1)
+        MTLSizeMake(width / recommendedThreadGroupCount.width,
+                    height / recommendedThreadGroupCount.height,
+                    1)
     }
 }

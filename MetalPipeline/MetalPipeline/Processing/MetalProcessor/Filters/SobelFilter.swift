@@ -6,6 +6,7 @@
 //  Copyright © 2020 Ernest Chechelski. All rights reserved.
 //
 
-class SobelFilter: MediaFilter {
-    override var name: String { "sobel_filter" }
+final class SobelFilter: Filter {
+    override var name: String { fatalError("Implement this filter") }
 }
+

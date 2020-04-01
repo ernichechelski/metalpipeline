@@ -9,8 +9,7 @@
 /* Begin PBXBuildFile section */
 		A313555C24336D7300EB0168 /* FilterProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A313555B24336D7300EB0168 /* FilterProcessor.swift */; };
 		A313555E24336DA700EB0168 /* GraphicContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A313555D24336DA700EB0168 /* GraphicContext.swift */; };
-		A313556324336DE200EB0168 /* FilterConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A313556224336DE200EB0168 /* FilterConfiguration.swift */; };
-		A313556524336E1200EB0168 /* MediaFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A313556424336E1200EB0168 /* MediaFilter.swift */; };
+		A313556324336DE200EB0168 /* FilteringComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A313556224336DE200EB0168 /* FilteringComponents.swift */; };
 		A313556724336E2E00EB0168 /* ColorFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A313556624336E2D00EB0168 /* ColorFilter.swift */; };
 		A313556924336E6100EB0168 /* BlurFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A313556824336E6100EB0168 /* BlurFilter.swift */; };
 		A313556C24336EC000EB0168 /* SepiaFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A313556B24336EC000EB0168 /* SepiaFilter.swift */; };
@@ -27,6 +26,9 @@
 		A33F82BD243202B1005581A6 /* MetalPipelineUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A33F82BC243202B1005581A6 /* MetalPipelineUITests.swift */; };
 		A33F82CB24320576005581A6 /* shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = A33F82CA24320576005581A6 /* shaders.metal */; };
 		A3A202282433447F001CD94F /* Any+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A202272433447F001CD94F /* Any+Extensions.swift */; };
+		A3CAD7072433773A005D65BC /* NothingFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CAD7062433773A005D65BC /* NothingFilter.swift */; };
+		A3CAD70924337E8D005D65BC /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CAD70824337E8D005D65BC /* Filter.swift */; };
+		A3CAD70D24338141005D65BC /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CAD70C24338141005D65BC /* Media.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,8 +51,7 @@
 /* Begin PBXFileReference section */
 		A313555B24336D7300EB0168 /* FilterProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProcessor.swift; sourceTree = "<group>"; };
 		A313555D24336DA700EB0168 /* GraphicContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphicContext.swift; sourceTree = "<group>"; };
-		A313556224336DE200EB0168 /* FilterConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterConfiguration.swift; sourceTree = "<group>"; };
-		A313556424336E1200EB0168 /* MediaFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaFilter.swift; sourceTree = "<group>"; };
+		A313556224336DE200EB0168 /* FilteringComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilteringComponents.swift; sourceTree = "<group>"; };
 		A313556624336E2D00EB0168 /* ColorFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorFilter.swift; sourceTree = "<group>"; };
 		A313556824336E6100EB0168 /* BlurFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlurFilter.swift; sourceTree = "<group>"; };
 		A313556B24336EC000EB0168 /* SepiaFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SepiaFilter.swift; sourceTree = "<group>"; };
@@ -73,6 +74,9 @@
 		A33F82BE243202B1005581A6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A33F82CA24320576005581A6 /* shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = shaders.metal; sourceTree = "<group>"; };
 		A3A202272433447F001CD94F /* Any+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Any+Extensions.swift"; sourceTree = "<group>"; };
+		A3CAD7062433773A005D65BC /* NothingFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NothingFilter.swift; sourceTree = "<group>"; };
+		A3CAD70824337E8D005D65BC /* Filter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Filter.swift; sourceTree = "<group>"; };
+		A3CAD70C24338141005D65BC /* Media.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Media.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,12 +107,9 @@
 		A313555F24336DC400EB0168 /* Processing */ = {
 			isa = PBXGroup;
 			children = (
-				A313556A24336E8400EB0168 /* Filters */,
-				A313555B24336D7300EB0168 /* FilterProcessor.swift */,
-				A313555D24336DA700EB0168 /* GraphicContext.swift */,
-				A313556224336DE200EB0168 /* FilterConfiguration.swift */,
-				A313556424336E1200EB0168 /* MediaFilter.swift */,
+				A3CAD70B24338139005D65BC /* Media */,
 				A3135571243370D100EB0168 /* Filters.swift */,
+				A3CAD70A243380DF005D65BC /* MetalProcessor */,
 			);
 			path = Processing;
 			sourceTree = "<group>";
@@ -121,6 +122,8 @@
 				A313556B24336EC000EB0168 /* SepiaFilter.swift */,
 				A313556D24336EED00EB0168 /* SobelFilter.swift */,
 				A313556F24336F0400EB0168 /* ThresholdFilter.swift */,
+				A3CAD7062433773A005D65BC /* NothingFilter.swift */,
+				A3CAD70824337E8D005D65BC /* Filter.swift */,
 			);
 			path = Filters;
 			sourceTree = "<group>";
@@ -178,6 +181,25 @@
 				A33F82BE243202B1005581A6 /* Info.plist */,
 			);
 			path = MetalPipelineUITests;
+			sourceTree = "<group>";
+		};
+		A3CAD70A243380DF005D65BC /* MetalProcessor */ = {
+			isa = PBXGroup;
+			children = (
+				A313556A24336E8400EB0168 /* Filters */,
+				A313555B24336D7300EB0168 /* FilterProcessor.swift */,
+				A313555D24336DA700EB0168 /* GraphicContext.swift */,
+				A313556224336DE200EB0168 /* FilteringComponents.swift */,
+			);
+			path = MetalProcessor;
+			sourceTree = "<group>";
+		};
+		A3CAD70B24338139005D65BC /* Media */ = {
+			isa = PBXGroup;
+			children = (
+				A3CAD70C24338141005D65BC /* Media.swift */,
+			);
+			path = Media;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -314,17 +336,19 @@
 				A33F82CB24320576005581A6 /* shaders.metal in Sources */,
 				A313556724336E2E00EB0168 /* ColorFilter.swift in Sources */,
 				A33F829F243202AC005581A6 /* ViewController.swift in Sources */,
-				A313556324336DE200EB0168 /* FilterConfiguration.swift in Sources */,
+				A313556324336DE200EB0168 /* FilteringComponents.swift in Sources */,
 				A313556C24336EC000EB0168 /* SepiaFilter.swift in Sources */,
 				A33F829B243202AC005581A6 /* AppDelegate.swift in Sources */,
 				A3135572243370D100EB0168 /* Filters.swift in Sources */,
 				A313556924336E6100EB0168 /* BlurFilter.swift in Sources */,
+				A3CAD70924337E8D005D65BC /* Filter.swift in Sources */,
 				A313557024336F0400EB0168 /* ThresholdFilter.swift in Sources */,
 				A3A202282433447F001CD94F /* Any+Extensions.swift in Sources */,
 				A313555C24336D7300EB0168 /* FilterProcessor.swift in Sources */,
+				A3CAD7072433773A005D65BC /* NothingFilter.swift in Sources */,
 				A33F829D243202AC005581A6 /* SceneDelegate.swift in Sources */,
+				A3CAD70D24338141005D65BC /* Media.swift in Sources */,
 				A313556E24336EED00EB0168 /* SobelFilter.swift in Sources */,
-				A313556524336E1200EB0168 /* MediaFilter.swift in Sources */,
 				A313555E24336DA700EB0168 /* GraphicContext.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

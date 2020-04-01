@@ -10,16 +10,20 @@ import Metal
 import MetalKit
 import MetalPerformanceShaders
 
-class GraphicContext {
+final class MetalDeviceWrapper {
+
+    var hasCustomShader: Bool {
+        mediaFilter.hasCustomShader
+    }
 
     let device: MTLDevice
 
     private let library: MTLLibrary
     private let commandQueue: MTLCommandQueue
     private let textureLoader: MTKTextureLoader
-    private let mediaFilter: MediaFilter
+    private let mediaFilter: Filter
 
-    init?(mediaFilter: MediaFilter) {
+    init?(mediaFilter: Filter) {
 
         guard
             let device = MTLCreateSystemDefaultDevice(),
@@ -50,5 +54,9 @@ class GraphicContext {
         try MTKTextureLoader(device: device)
         .newTexture(cgImage: cgImage,
                     options: [MTKTextureLoader.Option.SRGB: false])
+    }
+
+    func manageParameters(_ configuration: FilteringComponents) {
+        mediaFilter.manageParameters(configuration: configuration)
     }
 }

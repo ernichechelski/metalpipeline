@@ -5,12 +5,12 @@
 //  Created by Ernest Chechelski on 31/03/2020.
 //  Copyright © 2020 Ernest Chechelski. All rights reserved.
 //
+//  Filter colors
+//
 
-import Metal
 import MetalKit
-import MetalPerformanceShaders
 
-class ColorFilter: MediaFilter {
+final class ColorFilter: Filter {
 
     override var name: String { "color_shader" }
 
@@ -35,13 +35,12 @@ class ColorFilter: MediaFilter {
         """
     }
 
-    var r: CGFloat = 0.0
-    var g: CGFloat = 0.0
-    var b: CGFloat = 0.0
+    private let r: CGFloat = 0 // Pass only red components
+    private let g: CGFloat = 1 // Pass only green components
+    private let b: CGFloat = 0 // Pass only blue components
 
-    override func manageParameters(configuration: FilterConfiguration) {
-        let colorFilter = self
-        var data = [CFloat(colorFilter.r), CFloat(colorFilter.g), CFloat(colorFilter.b)]
+    override func manageParameters(configuration: FilteringComponents) {
+        var data = [CFloat(r), CFloat(g), CFloat(b)]
         let dataBuffer = configuration.view.device!.makeBuffer(bytes: &data, length: MemoryLayout.stride(ofValue: data), options: [])
         configuration.encoder.setBuffer(dataBuffer!, offset: 0, index: 0)
     }

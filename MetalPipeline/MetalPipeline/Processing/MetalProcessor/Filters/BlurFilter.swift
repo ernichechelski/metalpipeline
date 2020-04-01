@@ -6,24 +6,15 @@
 //  Copyright © 2020 Ernest Chechelski. All rights reserved.
 //
 
-import Metal
-import MetalKit
 import MetalPerformanceShaders
 
-class BlurFilter: MediaFilter {
+final class BlurFilter: Filter {
 
     override var name: String { "blur_filter" }
 
-    private let kBlurSigmaDefaultValue: Float = 45
+    private let sigma: Float = 45
 
-    var sigma: Float = 0
-
-    override init() {
-        super.init()
-        sigma = kBlurSigmaDefaultValue
-    }
-
-    override func manageParameters(configuration: FilterConfiguration) {
+    override func manageParameters(configuration: FilteringComponents) {
         let filter = self
         let blurFilter = MPSImageGaussianBlur(device: configuration.view.device!, sigma: filter.sigma)
         blurFilter.encode(commandBuffer: configuration.commandBuffer, sourceTexture: configuration.sourceTexture, destinationTexture: configuration.destinationTexture)
