@@ -22,7 +22,7 @@ vertex float4 vertex_advanced(const VertexIn vertexIn [[ stage_in ]],
     return position;
 }
 
-/// Returns color of the fragment
+/// Returns color of the fragment, by just ignoring parameter
 fragment float4 fragment_main() {
     return float4(1, 1, 1, 1);
 }

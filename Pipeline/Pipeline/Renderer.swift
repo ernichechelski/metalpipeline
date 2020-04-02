@@ -1,37 +1,47 @@
 import MetalKit
 import Cocoa
 
-final class MetalRenderer: NSObject {
+final class MetalRenderer: NSObject, MTKViewDelegate {
 
-    private var metalView: MTKView
+    private let metalView: MTKView
+    private let library: MTLLibrary
+    private let device: MTLDevice
     private var commandQueue: MTLCommandQueue
+    private let allocator: MTKMeshBufferAllocator
+
+    private let vertexFunction: MTLFunction
+    private let fragmentFunction: MTLFunction
+
+    private var timer: Float = 0
+
+    private var primitve: Primitive?
+    private var pipelineState: MTLRenderPipelineState?
     private var mtkMesh: MTKMesh?
     private var vertexBuffer: MTLBuffer?
-    private var pipelineState: MTLRenderPipelineState?
-    private var timer: Float = 0
-    private var library: MTLLibrary
-    private var device: MTLDevice
-    private var primitve: Primitive?
-    private var allocator: MTKMeshBufferAllocator
+
+
 
     init?(metalView: MTKView) {
         guard
             let device = MTLCreateSystemDefaultDevice(),
             let commandQueue = device.makeCommandQueue(),
             let library = device.makeDefaultLibrary()
-            else {
-                fatalError("GPU not available")
+        else {
+            fatalError("GPU not available")
         }
 
         self.device = device
         self.library = library
+        self.vertexFunction = library.vertexAdvancedFunction
+        self.fragmentFunction = library.fragmentFunction
+
         self.metalView = metalView
         self.metalView.device = device
         self.commandQueue = commandQueue
         self.allocator = MTKMeshBufferAllocator(device: device)
+
         super.init()
-        metalView.clearColor = MTLClearColor(red: 1.0, green: 1.0,
-                                             blue: 0.8, alpha: 1)
+        
         metalView.delegate = self
     }
 
@@ -43,8 +53,8 @@ final class MetalRenderer: NSObject {
         vertexBuffer = mtkMesh?.vertexBuffers[0].buffer
 
         let parameters = MTLRenderPassDescriptorParameters(
-            vertexFunction: library.vertexAdvancedFunction,
-            fragmentFunction: library.fragmentColorFunction,
+            vertexFunction: vertexFunction,
+            fragmentFunction: fragmentFunction,
             vertexDescriptor: primitve!.mesh.mtkVertexDescriptor,
             colorPixelFormat: metalView.colorPixelFormat
         )
@@ -55,6 +65,141 @@ final class MetalRenderer: NSObject {
         } catch let error {
             fatalError(error.localizedDescription)
         }
+    }
+
+    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) { }
+
+    func draw(in view: MTKView) {
+        timer += 0.02
+        guard
+            let descriptor = view.currentRenderPassDescriptor,
+            let commandBuffer = commandQueue.makeCommandBuffer(),
+            let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor)
+        else {
+            return
+        }
+
+        if let pipelineState = pipelineState {
+            renderEncoder.setRenderPipelineState(pipelineState)
+            renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
+
+            renderEncoder.setPositionOffset(offset: primitve!.behaviour?(timer) ?? PositionOffsets(x: 0, y: 0, z: 0))
+            renderEncoder.setColor(primitve!.color)
+            if let mesh = mtkMesh {
+                renderEncoder.set(mtkMesh: mesh)
+            }
+        }
+
+        renderEncoder.endEncoding()
+
+        if let drawable = view.currentDrawable {
+            commandBuffer.present(drawable)
+            commandBuffer.commit()
+        }
+    }
+}
+
+final class MetalRenderer2: NSObject, MTKViewDelegate {
+
+    private let metalView: MTKView
+    private let library: MTLLibrary
+    private let device: MTLDevice
+    private var commandQueue: MTLCommandQueue
+    private let allocator: MTKMeshBufferAllocator
+
+    private let vertexFunction: MTLFunction
+    private let fragmentFunction: MTLFunction
+
+    private var timer: Float = 0
+
+    private var primitves = [Primitive]()
+
+
+    init?(metalView: MTKView) {
+        guard
+            let device = MTLCreateSystemDefaultDevice(),
+            let commandQueue = device.makeCommandQueue(),
+            let library = device.makeDefaultLibrary()
+        else {
+            fatalError("GPU not available")
+        }
+
+        self.device = device
+        self.library = library
+        self.metalView = metalView
+        self.metalView.device = device
+        self.commandQueue = commandQueue
+        allocator = MTKMeshBufferAllocator(device: device)
+        self.vertexFunction = library.vertexAdvancedFunction
+        self.fragmentFunction = library.fragmentColorFunction
+        super.init()
+        metalView.delegate = self
+    }
+
+    func setRendering(primitives: [Primitive]) {
+        self.primitves = primitives
+        primitives.forEach {
+            $0.create(allocator: allocator)
+            $0.generateMTKMesh(device: device)
+            print($0.mtkMesh.vertexBuffers.count)
+        }
+    }
+
+    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) { }
+
+    func draw(in view: MTKView) {
+        timer += 0.02
+        timer = timer.truncatingRemainder(dividingBy: 1000)
+
+        guard
+            let descriptor = view.currentRenderPassDescriptor,
+            let commandBuffer = commandQueue.makeCommandBuffer(),
+            let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor)
+        else {
+            return
+        }
+
+
+        primitves.forEach {
+
+            var vertexBuffer = $0.mtkMesh.vertexBuffers.first?.buffer
+
+            let parameters = MTLRenderPassDescriptorParameters(
+                vertexFunction: vertexFunction,
+                fragmentFunction: fragmentFunction,
+                vertexDescriptor: $0.mesh.mtkVertexDescriptor,
+                colorPixelFormat: metalView.colorPixelFormat
+            )
+
+            let pipelineDescriptor = parameters.mtlRenderPipelineDescriptor
+            do {
+                let pipelineState = try device.makeRenderPipelineState(descriptor: pipelineDescriptor)
+
+//                vertexBuffer.setPurgeableState(.nonVolatile)
+                renderEncoder.setRenderPipelineState(pipelineState)
+                renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
+                renderEncoder.setPositionOffset(offset: $0.behaviour?(timer) ?? PositionOffsets(x: 0, y: 0, z: 0))
+                renderEncoder.setColor($0.color)
+                renderEncoder.set(mtkMesh: $0.mtkMesh)
+//                vertexBuffer.setPurgeableState(.volatile)
+            } catch let error {
+                fatalError(error.localizedDescription)
+            }
+
+            vertexBuffer = nil
+        }
+
+        renderEncoder.endEncoding()
+
+
+        if let drawable = view.currentDrawable {
+            commandBuffer.present(drawable)
+            commandBuffer.commit()
+        }
+
+        primitves.map { $0.mtkMesh.vertexBuffers }.compactMap { $0 }.forEach { $0.forEach { $0.buffer.setPurgeableState(.volatile) }  }
+
+        print(commandQueue.device.currentAllocatedSize)
     }
 }
 
@@ -87,39 +232,6 @@ extension MTLRenderPipelineDescriptor {
     }
 }
 
-extension MetalRenderer: MTKViewDelegate {
-
-    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) { }
-
-    func draw(in view: MTKView) {
-        timer += 0.02
-        guard
-            let descriptor = view.currentRenderPassDescriptor,
-            let commandBuffer = commandQueue.makeCommandBuffer(),
-            let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor),
-            let pipelineState = pipelineState,
-            let mtkMesh = mtkMesh
-        else {
-            return
-        }
-        renderEncoder.setRenderPipelineState(pipelineState)
-        renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
-
-        renderEncoder.setPositionOffset(offset: .init(x:primitve!.calculateParam(time: timer),
-                                                      y: primitve!.calculateParam(time: timer),
-                                                      z: primitve!.calculateParam(time: timer)))
-        renderEncoder.setColor(primitve!.color)
-        renderEncoder.set(mtkMesh: mtkMesh)
-
-        renderEncoder.endEncoding()
-
-        guard let drawable = view.currentDrawable else { return }
-
-        commandBuffer.present(drawable)
-        commandBuffer.commit()
-    }
-}
-
 extension MTLLibrary {
 
     var vertexFunction: MTLFunction {
@@ -139,11 +251,9 @@ extension MTLLibrary {
     }
 }
 
-struct PositionOffsets {
-    let x: Float
-    let y: Float
-    let z: Float
 
+
+fileprivate extension PositionOffsets {
     var fragmentBytes: vector_float3 {
         vector_float3(x,y,z)
     }
@@ -190,5 +300,25 @@ extension NSColor {
             Float(blueComponent),
             Float(alphaComponent)
         )
+    }
+
+    var mtlColor: MTLClearColor {
+        MTLClearColor(
+            red: Double(redComponent),
+            green: Double(greenComponent),
+            blue: Double(blueComponent),
+            alpha: Double(alphaComponent)
+        )
+    }
+
+
+    /// mtlColor field is supported only with RGB colorspace.
+    static var rgbWhite: NSColor {
+        NSColor(colorSpace: .genericRGB, components: [
+            CGFloat(0),
+            CGFloat(0),
+            CGFloat(0),
+            CGFloat(0)
+        ], count: 4)
     }
 }
