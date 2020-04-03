@@ -27,18 +27,22 @@ extension MTLRenderCommandEncoder {
         setVertexBytes(&currentOffset, length: MemoryLayout.size(ofValue: currentOffset), index: 1)
     }
 
-    func set(mtkMesh: MTKMesh) {
-        mtkMesh.submeshes.forEach {
-            drawIndexedPrimitives(type: $0.primitiveType,
-                                  indexCount: $0.indexCount,
-                                  indexType: $0.indexType,
-                                  indexBuffer: $0.indexBuffer.buffer,
-                                  indexBufferOffset: $0.indexBuffer.offset)
-        }
+    func draw(mtkMesh: MTKMesh) {
+        mtkMesh.submeshes.forEach(draw(mtkSubmesh:))
+    }
+
+    func draw(mtkSubmesh: MTKSubmesh) {
+        drawIndexedPrimitives(type: mtkSubmesh.primitiveType,
+        indexCount: mtkSubmesh.indexCount,
+        indexType: mtkSubmesh.indexType,
+        indexBuffer: mtkSubmesh.indexBuffer.buffer,
+        indexBufferOffset: mtkSubmesh.indexBuffer.offset)
     }
 }
 
 fileprivate extension PositionOffsets {
+
+    /// Compatible with `MTLLibrary.vertexAdvancedFunction`
     var fragmentBytes: vector_float3 {
         vector_float3(x,y,z)
     }

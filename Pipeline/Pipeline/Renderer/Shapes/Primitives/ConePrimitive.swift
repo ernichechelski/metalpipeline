@@ -5,7 +5,7 @@ final class ConePrimitive: Primitive {
         mesh = MDLMesh(coneWithExtent: [size,size,size],
                        segments: [2,20],
                        inwardNormals: false, cap: true,
-                       geometryType: .triangles,
+                       geometryType: .lines,
                        allocator: allocator)
 
     }

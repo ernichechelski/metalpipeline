@@ -83,7 +83,7 @@ final class MetalRenderer2D: NSObject, MTKViewDelegate {
 
                 renderEncoder.setPositionOffset(offset: $0.behaviour?(timer) ?? PositionOffsets(x: 0, y: 0, z: 0))
                 renderEncoder.setColor($0.color)
-                renderEncoder.set(mtkMesh: $0.mtkMesh)
+                renderEncoder.draw(mtkMesh: $0.mtkMesh)
 
             } catch let error {
                 fatalError(error.localizedDescription)

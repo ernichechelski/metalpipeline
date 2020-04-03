@@ -4,7 +4,7 @@ final class IcosanhedronPrimitive: Primitive {
     override func create(allocator: MTKMeshBufferAllocator) {
         mesh = MDLMesh(icosahedronWithExtent: [size,size,size],
                        inwardNormals: false,
-                       geometryType: .triangles,
+                       geometryType: .lines,
                        allocator: allocator)
     }
 }
