@@ -14,8 +14,8 @@
             filePath = "Pipeline/ViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "26"
-            endingLineNumber = "26"
+            startingLineNumber = "7"
+            endingLineNumber = "7"
             landmarkName = "buttonTapped(_:)"
             landmarkType = "7">
          </BreakpointContent>

@@ -13,7 +13,14 @@
 		82F21F94202531E600B48CA1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F21F93202531E600B48CA1 /* ViewController.swift */; };
 		82F21F96202531E600B48CA1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 82F21F95202531E600B48CA1 /* Assets.xcassets */; };
 		82F21F99202531E600B48CA1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 82F21F97202531E600B48CA1 /* Main.storyboard */; };
-		82F21FA22025346900B48CA1 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F21FA12025346900B48CA1 /* Renderer.swift */; };
+		A3756279243725ED00B23DC1 /* MTLLibrary+Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3756278243725ED00B23DC1 /* MTLLibrary+Functions.swift */; };
+		A375627C2437263B00B23DC1 /* MTLRenderCommandEncoder+Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A375627B2437263B00B23DC1 /* MTLRenderCommandEncoder+Functions.swift */; };
+		A375627E2437275200B23DC1 /* MTLRenderPipelineDescriptor+Builder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A375627D2437275200B23DC1 /* MTLRenderPipelineDescriptor+Builder.swift */; };
+		A37562802437286000B23DC1 /* BoxPrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = A375627F2437286000B23DC1 /* BoxPrimitive.swift */; };
+		A3756282243728A500B23DC1 /* SpherePrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3756281243728A500B23DC1 /* SpherePrimitive.swift */; };
+		A3756284243728C100B23DC1 /* ConePrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3756283243728C100B23DC1 /* ConePrimitive.swift */; };
+		A3756286243728E500B23DC1 /* IcosanhedronPrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3756285243728E500B23DC1 /* IcosanhedronPrimitive.swift */; };
+		A375628B243729A000B23DC1 /* MetalRenderer2D.swift in Sources */ = {isa = PBXBuildFile; fileRef = A375628A243729A000B23DC1 /* MetalRenderer2D.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,7 +33,14 @@
 		82F21F98202531E600B48CA1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		82F21F9A202531E600B48CA1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		82F21F9B202531E600B48CA1 /* Pipeline.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pipeline.entitlements; sourceTree = "<group>"; };
-		82F21FA12025346900B48CA1 /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
+		A3756278243725ED00B23DC1 /* MTLLibrary+Functions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MTLLibrary+Functions.swift"; sourceTree = "<group>"; };
+		A375627B2437263B00B23DC1 /* MTLRenderCommandEncoder+Functions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MTLRenderCommandEncoder+Functions.swift"; sourceTree = "<group>"; };
+		A375627D2437275200B23DC1 /* MTLRenderPipelineDescriptor+Builder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MTLRenderPipelineDescriptor+Builder.swift"; sourceTree = "<group>"; };
+		A375627F2437286000B23DC1 /* BoxPrimitive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxPrimitive.swift; sourceTree = "<group>"; };
+		A3756281243728A500B23DC1 /* SpherePrimitive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpherePrimitive.swift; sourceTree = "<group>"; };
+		A3756283243728C100B23DC1 /* ConePrimitive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConePrimitive.swift; sourceTree = "<group>"; };
+		A3756285243728E500B23DC1 /* IcosanhedronPrimitive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IcosanhedronPrimitive.swift; sourceTree = "<group>"; };
+		A375628A243729A000B23DC1 /* MetalRenderer2D.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalRenderer2D.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,15 +75,54 @@
 			children = (
 				82F21F91202531E600B48CA1 /* AppDelegate.swift */,
 				82F21F93202531E600B48CA1 /* ViewController.swift */,
-				82F21FA12025346900B48CA1 /* Renderer.swift */,
-				8215C85E202538780027131A /* Primitive.swift */,
-				8215C860202544A30027131A /* Shaders.metal */,
+				A37562892437296300B23DC1 /* Renderer */,
 				82F21F95202531E600B48CA1 /* Assets.xcassets */,
 				82F21F97202531E600B48CA1 /* Main.storyboard */,
 				82F21F9A202531E600B48CA1 /* Info.plist */,
 				82F21F9B202531E600B48CA1 /* Pipeline.entitlements */,
 			);
 			path = Pipeline;
+			sourceTree = "<group>";
+		};
+		A375627A2437261200B23DC1 /* Metal */ = {
+			isa = PBXGroup;
+			children = (
+				8215C860202544A30027131A /* Shaders.metal */,
+				A3756278243725ED00B23DC1 /* MTLLibrary+Functions.swift */,
+				A375627B2437263B00B23DC1 /* MTLRenderCommandEncoder+Functions.swift */,
+				A375627D2437275200B23DC1 /* MTLRenderPipelineDescriptor+Builder.swift */,
+			);
+			path = Metal;
+			sourceTree = "<group>";
+		};
+		A37562872437294800B23DC1 /* Primitives */ = {
+			isa = PBXGroup;
+			children = (
+				8215C85E202538780027131A /* Primitive.swift */,
+				A375627F2437286000B23DC1 /* BoxPrimitive.swift */,
+				A3756281243728A500B23DC1 /* SpherePrimitive.swift */,
+				A3756283243728C100B23DC1 /* ConePrimitive.swift */,
+				A3756285243728E500B23DC1 /* IcosanhedronPrimitive.swift */,
+			);
+			path = Primitives;
+			sourceTree = "<group>";
+		};
+		A37562882437295200B23DC1 /* Shapes */ = {
+			isa = PBXGroup;
+			children = (
+				A37562872437294800B23DC1 /* Primitives */,
+			);
+			path = Shapes;
+			sourceTree = "<group>";
+		};
+		A37562892437296300B23DC1 /* Renderer */ = {
+			isa = PBXGroup;
+			children = (
+				A37562882437295200B23DC1 /* Shapes */,
+				A375627A2437261200B23DC1 /* Metal */,
+				A375628A243729A000B23DC1 /* MetalRenderer2D.swift */,
+			);
+			path = Renderer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -143,8 +196,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A3756286243728E500B23DC1 /* IcosanhedronPrimitive.swift in Sources */,
+				A3756284243728C100B23DC1 /* ConePrimitive.swift in Sources */,
+				A375627E2437275200B23DC1 /* MTLRenderPipelineDescriptor+Builder.swift in Sources */,
+				A375627C2437263B00B23DC1 /* MTLRenderCommandEncoder+Functions.swift in Sources */,
+				A375628B243729A000B23DC1 /* MetalRenderer2D.swift in Sources */,
 				82F21F94202531E600B48CA1 /* ViewController.swift in Sources */,
-				82F21FA22025346900B48CA1 /* Renderer.swift in Sources */,
+				A3756279243725ED00B23DC1 /* MTLLibrary+Functions.swift in Sources */,
+				A37562802437286000B23DC1 /* BoxPrimitive.swift in Sources */,
+				A3756282243728A500B23DC1 /* SpherePrimitive.swift in Sources */,
 				82F21F92202531E600B48CA1 /* AppDelegate.swift in Sources */,
 				8215C85F202538780027131A /* Primitive.swift in Sources */,
 				8215C861202544A30027131A /* Shaders.metal in Sources */,
@@ -286,7 +346,7 @@
 				DEVELOPMENT_TEAM = MUVTD58Z55;
 				INFOPLIST_FILE = Pipeline/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.razeware.Pipeline;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ernichechelski.MetalPipeline;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 			};
@@ -303,7 +363,7 @@
 				DEVELOPMENT_TEAM = MUVTD58Z55;
 				INFOPLIST_FILE = Pipeline/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.razeware.Pipeline;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ernichechelski.MetalPipeline;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 			};
